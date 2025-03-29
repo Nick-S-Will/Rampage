@@ -1,20 +1,20 @@
+using ModularMovement.Checkers;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 
-namespace Rampage.Movement
+namespace ModularMovement.Controllers
 {
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(GroundChecker))]
     public class JumpController : MonoBehaviour
     {
-        public UnityEvent Jumped => jumped;
         public float JumpHeightMultiplier => jumpHeightMultiplier;
 
         [Header("Attributes")]
         [SerializeField][Min(1e-5f)] private float jumpHeight = 2f;
         [Header("Events")]
-        [SerializeField] private UnityEvent jumped;
+        [field: SerializeField] public UnityEvent Jumped { get; private set; }
 
         private new Rigidbody rigidbody;
         private GroundChecker groundChecker;
@@ -32,10 +32,10 @@ namespace Rampage.Movement
 
             float jumpMagnitude = Mathf.Sqrt(2f * jumpHeightMultiplier * jumpHeight * Physics.gravity.magnitude);
             Vector3 jumpDirection = rigidbody.rotation * Vector3.up;
-            Vector3 jumpAcceleration = jumpMagnitude * jumpDirection;
-            rigidbody.linearVelocity += jumpAcceleration;
+            Vector3 jumpForce = jumpMagnitude * jumpDirection;
+            rigidbody.AddForce(jumpForce, ForceMode.VelocityChange);
 
-            jumped.Invoke();
+            Jumped.Invoke();
         }
 
         public void MultiplyJumpHeight(float jumpHeightMultiplier)
