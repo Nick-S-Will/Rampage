@@ -29,12 +29,11 @@ namespace ModularMovement.Checkers
             CheckGround();
         }
 
-#if DEBUG
-        protected virtual void FixedUpdate()
+        protected virtual void OnDrawGizmosSelected()
         {
-            CheckGround();
+            Gizmos.color = IsGrounded ? Color.green : Color.red;
+            Gizmos.DrawWireSphere(GroundCheckPosition, maxGroundDistance);
         }
-#endif
 
         private void CheckGround()
         {
@@ -42,12 +41,6 @@ namespace ModularMovement.Checkers
 
             lastGroundCheckTime = Time.time;
             isGrounded = Physics.OverlapSphereNonAlloc(GroundCheckPosition, maxGroundDistance, groundColliders, groundMask, QueryTriggerInteraction.Ignore) > 0;
-        }
-
-        protected virtual void OnDrawGizmosSelected()
-        {
-            Gizmos.color = IsGrounded ? Color.green : Color.red;
-            Gizmos.DrawWireSphere(GroundCheckPosition, maxGroundDistance);
         }
     }
 }

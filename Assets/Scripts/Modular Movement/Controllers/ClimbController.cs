@@ -51,7 +51,7 @@ namespace ModularMovement.Controllers
         protected virtual void FixedUpdate()
         {
             UpdateLastMoveDirection();
-            IsClimbing = CanClimb && wallChecker.CheckWall(lastMoveDirection);
+            IsClimbing = wallChecker.CheckWall(lastMoveDirection) && CanClimb;
         }
 
         private void UpdateLastMoveDirection()
