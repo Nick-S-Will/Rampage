@@ -38,8 +38,8 @@ namespace ModularMovement.Controllers
 
         [SerializeField] private Transform inputRotationOverride;
         [Header("Attributes")]
-        [SerializeField][Min(1e-5f)] private float moveForce = 1000f;
         [SerializeField][Min(0f)] private float moveSpeedThreshold = 1e-3f;
+        [SerializeField][Min(1e-5f)] private float moveForce = 1000f;
         [SerializeField] private bool canMoveOffGround;
         [Header("Events")]
         [field: SerializeField] public UnityEvent MoveStarted { get; private set; }

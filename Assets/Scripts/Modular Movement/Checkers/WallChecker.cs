@@ -5,8 +5,6 @@ namespace ModularMovement.Checkers
     public class WallChecker : MonoBehaviour
     {
         public Vector3 WallCheckPosition => wallCheckPositionOverride != null ? wallCheckPositionOverride.position : transform.position;
-        public GameObject Wall { get; private set; }
-        public Vector3? WallPosition { get; private set; }
 
         [SerializeField] private Transform wallCheckPositionOverride;
         [Header("Physics Checks")]
@@ -33,15 +31,15 @@ namespace ModularMovement.Checkers
         }
 #endif
 
-        public bool CheckWall(Vector3 direction)
+        public bool CheckWall(Vector3 direction) => CheckWall(direction, out _);
+
+        public bool CheckWall(Vector3 direction, out RaycastHit wallHitInfo)
         {
             Ray ray = new(WallCheckPosition, direction);
-            bool hit = Physics.SphereCast(ray, maxGrabDistance, out RaycastHit hitInfo, maxWallDistance, wallMask, QueryTriggerInteraction.Ignore);
-            Wall = hit ? hitInfo.collider.gameObject : null;
-            WallPosition = hit ? hitInfo.point : null;
+            bool hit = Physics.SphereCast(ray, maxGrabDistance, out wallHitInfo, maxWallDistance, wallMask, QueryTriggerInteraction.Ignore);
 
 #if DEBUG
-            lastCheckDirection = direction;
+            lastCheckDirection = direction.normalized;
             lastCheckResult = hit;
 #endif
 

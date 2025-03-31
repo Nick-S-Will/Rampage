@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,53 +10,67 @@ namespace Rampage.Terrain
     [RequireComponent(typeof(Collider))]
     public class Building : MonoBehaviour, IDamageable
     {
-        [Serializable]
         private class DamageablePoint
         {
             public Collider collider;
             public Renderer renderer;
+
+            public DamageablePoint(Collider collider, Renderer renderer)
+            {
+                this.collider = collider;
+                this.renderer = renderer;
+            }
         }
 
-        [SerializeField] private DamageablePoint[] damageablePoints;
         [SerializeField] private Material damagedMaterial;
         [Header("Events")]
         [field: SerializeField] public UnityEvent Damaged { get; private set; }
         [field: SerializeField] public UnityEvent Collapsed { get; private set; }
 
         private new Rigidbody rigidbody;
-        private new Collider collider;
+        private Collider[] colliders;
         private readonly HashSet<DamageablePoint> intactPoints = new();
 
         protected virtual void Awake()
         {
-            Assert.IsTrue(damageablePoints.Length > 0 && damageablePoints.All(point => point != null && point.collider != null && point.renderer != null));
             Assert.IsNotNull(damagedMaterial);
 
+            Damaged.AddListener(Collapse);
+
             rigidbody = GetComponent<Rigidbody>();
-            collider = GetComponent<Collider>();
-            foreach (DamageablePoint point in damageablePoints) intactPoints.Add(point);
+            colliders = GetComponents<Collider>();
+            CollectDamageablePoints();
+        }
+
+        private void CollectDamageablePoints()
+        {
+            foreach (Collider collider in GetComponentsInChildren<Collider>())
+            {
+                if (!collider.TryGetComponent(out Renderer renderer)) continue;
+
+                intactPoints.Add(new DamageablePoint(collider, renderer));
+            }
         }
 
         public bool TakeDamage(Vector3 position)
         {
             DamageablePoint point = intactPoints.FirstOrDefault(p => p.collider.bounds.Contains(position));
-            if (point == null) return false;
+            if (point == null || !intactPoints.Remove(point)) return false;
 
-            _ = intactPoints.Remove(point);
             point.renderer.material = damagedMaterial;
 
             Damaged.Invoke();
-
-            if (intactPoints.Count == 0) Collapse();
 
             return true;
         }
 
         private void Collapse()
         {
+            if (intactPoints.Count > 0) return;
+
             rigidbody.useGravity = true;
             rigidbody.isKinematic = false;
-            collider.enabled = false;
+            foreach (Collider collider in colliders) collider.enabled = false;
 
             Destroy(gameObject, 5f);
 

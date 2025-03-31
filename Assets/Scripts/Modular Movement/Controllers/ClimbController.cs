@@ -9,6 +9,18 @@ namespace ModularMovement.Controllers
     [RequireComponent(typeof(WallChecker))]
     public class ClimbController : MonoBehaviour
     {
+        public RaycastHit WallHitInfo => wallHitInfo;
+        public Quaternion Rotation => Quaternion.LookRotation(MoveForward, transform.up);
+        public Vector3 MoveForward
+        {
+            get
+            {
+                if (isClimbing) return -wallHitInfo.normal;
+
+                bool isMoving = rigidbody.linearVelocity.magnitude > moveSpeedThreshold;
+                return isMoving ? Vector3.ProjectOnPlane(rigidbody.linearVelocity, transform.up).normalized : transform.forward;
+            }
+        }
         public bool CanClimb => !groundChecker.IsGrounded;
         public bool IsClimbing
         {
@@ -28,8 +40,9 @@ namespace ModularMovement.Controllers
         }
 
         [Header("Attributes")]
-        [SerializeField][Min(1e-5f)] private float climbSpeed = 2f;
-        [SerializeField][Min(1e-5f)] private float strafeSpeed = .5f;
+        [SerializeField][Min(0f)] private float moveSpeedThreshold = 1e-3f;
+        [SerializeField][Min(0f)] private float climbSpeedDamping = 1f;
+        [SerializeField][Min(1e-5f)] private float climbForce = 500, strafeForce = 750f, jumpOffForce = 500f;
         [Header("Events")]
         [field: SerializeField] public UnityEvent ClimbStarted { get; private set; }
         [field: SerializeField] public UnityEvent ClimbStopped { get; private set; }
@@ -37,7 +50,7 @@ namespace ModularMovement.Controllers
         private new Rigidbody rigidbody;
         private GroundChecker groundChecker;
         private WallChecker wallChecker;
-        private Vector3 lastMoveDirection;
+        private RaycastHit wallHitInfo;
         private bool isClimbing;
 
         protected virtual void Awake()
@@ -45,40 +58,43 @@ namespace ModularMovement.Controllers
             rigidbody = GetComponent<Rigidbody>();
             groundChecker = GetComponent<GroundChecker>();
             wallChecker = GetComponent<WallChecker>();
-            lastMoveDirection = transform.forward;
         }
 
         protected virtual void FixedUpdate()
         {
-            UpdateLastMoveDirection();
-            IsClimbing = wallChecker.CheckWall(lastMoveDirection) && CanClimb;
+            IsClimbing = wallChecker.CheckWall(MoveForward, out wallHitInfo) && CanClimb;
+
+            DampenClimbVelocity();
         }
 
-        private void UpdateLastMoveDirection()
+        private void DampenClimbVelocity()
         {
-            if (isClimbing) return;
+            if (!isClimbing) return;
 
-            Vector3 moveVelocity = Vector3.ProjectOnPlane(rigidbody.linearVelocity, transform.up);
-            if (moveVelocity == Vector3.zero) return;
+            float climbSpeedThreshold = climbSpeedDamping * Time.fixedDeltaTime;
+            if (rigidbody.linearVelocity.magnitude < climbSpeedThreshold) return;
 
-            lastMoveDirection = moveVelocity.normalized;
+            rigidbody.AddForce(-climbSpeedDamping * rigidbody.linearVelocity.normalized, ForceMode.Acceleration);
         }
 
         public virtual void Climb(Vector2 input)
         {
             if (input == Vector2.zero || !isClimbing) return;
 
-            Quaternion rotation = Quaternion.LookRotation(lastMoveDirection, transform.up);
+            Vector3 localClimbForce = new(strafeForce * input.x, climbForce * input.y);
+            Vector3 globalClimbForce = Rotation * localClimbForce;
 
-            bool ascending = input.y > 0;
-            float localY = ascending ? input.y : 0f;
-            float localZ = ascending ? 0f : input.y;
-            Vector3 localInputDirection = new Vector3(input.x, localY, localZ).normalized;
-            Vector3 localMoveDelta = Time.fixedDeltaTime * Vector3.Scale(new Vector3(strafeSpeed, climbSpeed, strafeSpeed), localInputDirection);
+            rigidbody.AddForce(globalClimbForce);
+        }
 
-            Vector3 globalMoveDelta = rotation * localMoveDelta;
+        public virtual void JumpOff()
+        {
+            if (!isClimbing) return;
 
-            rigidbody.MovePosition(rigidbody.position + globalMoveDelta);
+            Vector3 localJumpForce = jumpOffForce * Vector3.back;
+            Vector3 globalJumpForce = Rotation * localJumpForce;
+
+            rigidbody.AddForce(globalJumpForce, ForceMode.Impulse);
         }
     }
 }
