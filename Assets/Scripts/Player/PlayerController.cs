@@ -1,4 +1,4 @@
-using CustomizableControls;
+using CustomizableControls.Attacks;
 using CustomizableControls.Movement;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,11 +8,13 @@ namespace Rampage.Player
     [RequireComponent(typeof(MoveController))]
     [RequireComponent(typeof(JumpController))]
     [RequireComponent(typeof(ClimbController))]
+    [RequireComponent(typeof(WallSmashController))]
     public class PlayerController : MonoBehaviour
     {
         private MoveController moveController;
         private JumpController jumpController;
         private ClimbController climbController;
+        private WallSmashController wallSmashController;
         private Vector2 moveInput;
 
         private void Awake()
@@ -20,6 +22,7 @@ namespace Rampage.Player
             moveController = GetComponent<MoveController>();
             jumpController = GetComponent<JumpController>();
             climbController = GetComponent<ClimbController>();
+            wallSmashController = GetComponent<WallSmashController>();
         }
 
         private void FixedUpdate()
@@ -45,14 +48,7 @@ namespace Rampage.Player
         {
             if (!context.performed) return;
 
-            Smash();
-        }
-
-        private void Smash()
-        {
-            if (!climbController.IsClimbing || !climbController.WallHitInfo.collider.TryGetComponent(out IDamageable damageable)) return;
-
-            damageable.TakeDamage(climbController.WallHitInfo.point);
+            wallSmashController.Smash();
         }
     }
 }

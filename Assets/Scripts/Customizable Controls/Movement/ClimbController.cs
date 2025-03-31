@@ -9,35 +9,36 @@ namespace CustomizableControls.Movement
     [RequireComponent(typeof(WallChecker))]
     public class ClimbController : MonoBehaviour
     {
-        public RaycastHit WallHitInfo => wallHitInfo;
+        public RaycastHit? WallHitInfo
+        {
+            get => wallHitInfo; 
+            private set
+            {
+                bool isSameClimbingState = wallHitInfo.HasValue == value.HasValue;
+                wallHitInfo = value;
+
+                if (isSameClimbingState) return;
+
+                rigidbody.useGravity = !IsClimbing;
+                if (IsClimbing) rigidbody.linearVelocity = Vector3.zero;
+
+                if (IsClimbing) ClimbStarted.Invoke();
+                else ClimbStopped.Invoke();
+            }
+        }
         public Quaternion Rotation => Quaternion.LookRotation(MoveForward, transform.up);
         public Vector3 MoveForward
         {
             get
             {
-                if (isClimbing) return -wallHitInfo.normal;
+                if (IsClimbing) return -WallHitInfo.Value.normal;
 
                 bool isMoving = rigidbody.linearVelocity.magnitude > moveSpeedThreshold;
                 return isMoving ? Vector3.ProjectOnPlane(rigidbody.linearVelocity, transform.up).normalized : transform.forward;
             }
         }
         public bool CanClimb => !groundChecker.IsGrounded;
-        public bool IsClimbing
-        {
-            get => isClimbing;
-            private set
-            {
-                if (isClimbing == value) return;
-
-                isClimbing = value;
-
-                rigidbody.useGravity = !isClimbing;
-                if (isClimbing) rigidbody.linearVelocity = Vector3.zero;
-
-                if (isClimbing) ClimbStarted.Invoke();
-                else ClimbStopped.Invoke();
-            }
-        }
+        public bool IsClimbing => WallHitInfo.HasValue;
 
         [Header("Attributes")]
         [SerializeField][Min(0f)] private float moveSpeedThreshold = 1e-3f;
@@ -50,8 +51,7 @@ namespace CustomizableControls.Movement
         private new Rigidbody rigidbody;
         private GroundChecker groundChecker;
         private WallChecker wallChecker;
-        private RaycastHit wallHitInfo;
-        private bool isClimbing;
+        private RaycastHit? wallHitInfo;
 
         protected virtual void Awake()
         {
@@ -62,14 +62,15 @@ namespace CustomizableControls.Movement
 
         protected virtual void FixedUpdate()
         {
-            IsClimbing = wallChecker.CheckWall(MoveForward, out wallHitInfo) && CanClimb;
+            bool hitWall = wallChecker.CheckWall(MoveForward, out RaycastHit wallHitInfo) && CanClimb;
+            WallHitInfo = hitWall ? wallHitInfo : null;
 
             DampenClimbVelocity();
         }
 
         private void DampenClimbVelocity()
         {
-            if (!isClimbing) return;
+            if (!IsClimbing) return;
 
             float climbSpeedThreshold = climbSpeedDamping * Time.fixedDeltaTime;
             if (rigidbody.linearVelocity.magnitude < climbSpeedThreshold) return;
@@ -79,7 +80,7 @@ namespace CustomizableControls.Movement
 
         public virtual void Climb(Vector2 input)
         {
-            if (input == Vector2.zero || !isClimbing) return;
+            if (input == Vector2.zero || !IsClimbing) return;
 
             Vector3 localClimbForce = new(strafeForce * input.x, climbForce * input.y);
             Vector3 globalClimbForce = Rotation * localClimbForce;
@@ -89,7 +90,7 @@ namespace CustomizableControls.Movement
 
         public virtual void JumpOff()
         {
-            if (!isClimbing) return;
+            if (!IsClimbing) return;
 
             Vector3 localJumpForce = jumpOffForce * Vector3.back;
             Vector3 globalJumpForce = Rotation * localJumpForce;

@@ -1142,6 +1142,7 @@ GameObject:
   - component: {fileID: 865298248}
   - component: {fileID: 865298247}
   - component: {fileID: 865298253}
+  - component: {fileID: 865298254}
   - component: {fileID: 865298251}
   - component: {fileID: 865298252}
   - component: {fileID: 865298250}
@@ -1471,6 +1472,18 @@ MonoBehaviour:
   <ClimbStopped>k__BackingField:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &865298254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 865298243}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03655845e5a77164a88f5bd9253da8ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &869648581
 GameObject:
   m_ObjectHideFlags: 0

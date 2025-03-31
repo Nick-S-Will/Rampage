@@ -48,7 +48,7 @@ namespace Rampage.Terrain
             {
                 if (!collider.TryGetComponent(out Renderer renderer)) continue;
 
-                intactPoints.Add(new DamageablePoint(collider, renderer));
+                _ = intactPoints.Add(new DamageablePoint(collider, renderer));
             }
         }
 
