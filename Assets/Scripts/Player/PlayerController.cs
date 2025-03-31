@@ -1,4 +1,5 @@
-using ModularMovement.Controllers;
+using CustomizableControls;
+using CustomizableControls.Movement;
 using UnityEngine;
 using UnityEngine.InputSystem;
 

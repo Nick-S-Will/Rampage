@@ -1,9 +1,9 @@
-using ModularMovement.Checkers;
+using CustomizableControls.Checkers;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 
-namespace ModularMovement.Controllers
+namespace CustomizableControls.Movement
 {
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(GroundChecker))]

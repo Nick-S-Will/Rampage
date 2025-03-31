@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Rampage
+namespace CustomizableControls
 {
     public interface IDamageable
     {

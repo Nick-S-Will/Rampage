@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ModularMovement.Checkers
+namespace CustomizableControls.Checkers
 {
     public class GroundChecker : MonoBehaviour
     {
