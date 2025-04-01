@@ -9,9 +9,10 @@ namespace CustomizableControls.Attacks.Shooting
     {
         public Component DamageSource { get; private set; }
         public int Damage => damage;
+        public float MaxDistance => maxDistance;
 
-        [SerializeField][Min(1e-5f)] private float maxDistance = 25f;
         [SerializeField][Min(1f)] private int damage = 10;
+        [SerializeField][Min(1e-5f)] private float maxDistance = 25f;
 
         private new Rigidbody rigidbody;
 

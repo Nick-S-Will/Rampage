@@ -7,6 +7,8 @@ namespace CustomizableControls.Attacks.Shooting
 {
     public class GunController : MonoBehaviour
     {
+        public Projectile BulletPrefab => bulletPrefab;
+        public Transform BulletSpawnPoint => bulletSpawnPoint;
         public float RoundsPerSecond => roundsPerSecond;
         public float BulletSpeed => bulletSpeed;
         public float ReloadTime => reloadTime;
@@ -21,8 +23,6 @@ namespace CustomizableControls.Attacks.Shooting
         public bool IsReloading => reloading != null;
         public bool IsShooting => shooting != null;
 
-        protected Projectile BulletPrefab => bulletPrefab;
-        protected Transform BulletSpawnPoint => bulletSpawnPoint;
         protected virtual float ShotInterval => 1f / roundsPerSecond;
 
         [SerializeField] private Projectile bulletPrefab;
@@ -34,7 +34,7 @@ namespace CustomizableControls.Attacks.Shooting
         [SerializeField][Min(0f)] private int startingAmmo = 64;
         [SerializeField] private bool isFullyAutomatic = true, hasInfiniteAmmo;
 #if DEBUG
-        [Header("Validation")]
+        [Header("Debug")]
         [SerializeField][Range(0f, 1f)] private float sizePercentageBuffer = .1f;
 #endif
         [Header("Events")]

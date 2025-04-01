@@ -2,11 +2,11 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 
-public static class ListExtensions
+public static class EnumerableExtensions
 {
     private static readonly Random random = new();
 
-    public static IList<T> Shuffle<T>(this IList<T> source)
+    public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source)
     {
         if (source == null) throw new ArgumentNullException(nameof(source));
 

@@ -56,14 +56,14 @@ namespace Rampage.Terrain
             }
         }
 
-        public bool CanTakeDamage(IDamageDealer damageDealer, Vector3 position)
+        public virtual bool CanTakeDamage(IDamageDealer damageDealer, Vector3 position)
         {
             if (damageDealer.DamageSource.transform.IsChildOf(transform)) return false;
 
             return intactPoints.Any(point => point.collider.bounds.Contains(position));
         }
 
-        public bool TakeDamage(IDamageDealer damageDealer, Vector3 position)
+        public virtual bool TakeDamage(IDamageDealer damageDealer, Vector3 position)
         {
             if (!CanTakeDamage(damageDealer, position)) return false;
 

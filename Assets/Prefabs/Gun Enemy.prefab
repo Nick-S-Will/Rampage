@@ -165,6 +165,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gunController: {fileID: 7273091334897547672}
   maxPointAngle: 60
+  coneResolution: 24
 --- !u!1 &4535627838467960153
 GameObject:
   m_ObjectHideFlags: 0

@@ -246,7 +246,8 @@ MonoBehaviour:
   - {fileID: 2143427547}
   - {fileID: 188265460}
   - {fileID: 2015423444}
-  spawnCount: 3
+  target: {fileID: 865298244}
+  maxSpawnCount: 3
 --- !u!1 &188265459
 GameObject:
   m_ObjectHideFlags: 0
