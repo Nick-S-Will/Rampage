@@ -22,10 +22,13 @@ namespace Rampage.Terrain
             }
         }
 
+        public UnityEvent Damaged => damaged;
+        public UnityEvent Collapsed => collapsed;
+
         [SerializeField] private Material damagedMaterial;
         [Header("Events")]
-        [field: SerializeField] public UnityEvent Damaged { get; private set; }
-        [field: SerializeField] public UnityEvent Collapsed { get; private set; }
+        [SerializeField] private UnityEvent damaged;
+        [SerializeField] private UnityEvent collapsed;
 
         private new Rigidbody rigidbody;
         private Collider[] colliders;
@@ -35,7 +38,7 @@ namespace Rampage.Terrain
         {
             Assert.IsNotNull(damagedMaterial);
 
-            Damaged.AddListener(Collapse);
+            damaged.AddListener(Collapse);
 
             rigidbody = GetComponent<Rigidbody>();
             colliders = GetComponents<Collider>();
@@ -67,7 +70,7 @@ namespace Rampage.Terrain
             point.renderer.material = damagedMaterial;
             _ = !intactPoints.Remove(point);
 
-            Damaged.Invoke();
+            damaged.Invoke();
 
             return true;
         }
@@ -82,7 +85,7 @@ namespace Rampage.Terrain
 
             Destroy(gameObject, 5f);
 
-            Collapsed.Invoke();
+            collapsed.Invoke();
         }
     }
 }

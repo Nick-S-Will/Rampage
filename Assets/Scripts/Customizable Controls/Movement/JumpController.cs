@@ -9,12 +9,13 @@ namespace CustomizableControls.Movement
     [RequireComponent(typeof(GroundChecker))]
     public class JumpController : MonoBehaviour
     {
+        public UnityEvent Jumped => jumped;
         public float JumpHeightMultiplier => jumpHeightMultiplier;
 
         [Header("Attributes")]
         [SerializeField][Min(1e-5f)] private float jumpHeight = 2f;
         [Header("Events")]
-        [field: SerializeField] public UnityEvent Jumped { get; private set; }
+        [SerializeField] private UnityEvent jumped;
 
         private new Rigidbody rigidbody;
         private GroundChecker groundChecker;
@@ -35,7 +36,7 @@ namespace CustomizableControls.Movement
             Vector3 jumpForce = jumpMagnitude * jumpDirection;
             rigidbody.AddForce(jumpForce, ForceMode.VelocityChange);
 
-            Jumped.Invoke();
+            jumped.Invoke();
         }
 
         public void MultiplyJumpHeight(float jumpHeightMultiplier)

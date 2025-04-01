@@ -8,6 +8,8 @@ namespace CustomizableControls.Movement
     [RequireComponent(typeof(GroundChecker))]
     public class MoveController : MonoBehaviour
     {
+        public UnityEvent MoveStarted => moveStarted;
+        public UnityEvent MoveStopped => moveStopped;
         public Quaternion Rotation
         {
             get
@@ -31,8 +33,8 @@ namespace CustomizableControls.Movement
 
                 isMoving = value;
 
-                if (isMoving) MoveStarted.Invoke();
-                else MoveStopped.Invoke();
+                if (isMoving) moveStarted.Invoke();
+                else moveStopped.Invoke();
             }
         }
 
@@ -42,8 +44,8 @@ namespace CustomizableControls.Movement
         [SerializeField][Min(1e-5f)] private float moveForce = 1000f;
         [SerializeField] private bool canMoveOffGround;
         [Header("Events")]
-        [field: SerializeField] public UnityEvent MoveStarted { get; private set; }
-        [field: SerializeField] public UnityEvent MoveStopped { get; private set; }
+        [SerializeField] private UnityEvent moveStarted;
+        [SerializeField] private UnityEvent moveStopped;
 
         private new Rigidbody rigidbody;
         private GroundChecker groundChecker;

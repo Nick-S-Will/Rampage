@@ -9,6 +9,8 @@ namespace CustomizableControls.Movement
     [RequireComponent(typeof(WallChecker))]
     public class ClimbController : MonoBehaviour
     {
+        public UnityEvent ClimbStarted => climbStarted;
+        public UnityEvent ClimbStopped => climbStopped;
         public RaycastHit? WallHitInfo
         {
             get => wallHitInfo; 
@@ -22,8 +24,8 @@ namespace CustomizableControls.Movement
                 rigidbody.useGravity = !IsClimbing;
                 if (IsClimbing) rigidbody.linearVelocity = Vector3.zero;
 
-                if (IsClimbing) ClimbStarted.Invoke();
-                else ClimbStopped.Invoke();
+                if (IsClimbing) climbStarted.Invoke();
+                else climbStopped.Invoke();
             }
         }
         public Quaternion Rotation => Quaternion.LookRotation(MoveForward, transform.up);
@@ -45,8 +47,8 @@ namespace CustomizableControls.Movement
         [SerializeField][Min(0f)] private float climbSpeedDamping = 2f;
         [SerializeField][Min(1e-5f)] private float climbForce = 500, strafeForce = 750f, jumpOffForce = 250f;
         [Header("Events")]
-        [field: SerializeField] public UnityEvent ClimbStarted { get; private set; }
-        [field: SerializeField] public UnityEvent ClimbStopped { get; private set; }
+        [SerializeField] private UnityEvent climbStarted;
+        [SerializeField] private UnityEvent climbStopped;
 
         private new Rigidbody rigidbody;
         private GroundChecker groundChecker;

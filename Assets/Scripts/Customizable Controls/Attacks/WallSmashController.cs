@@ -18,6 +18,7 @@ namespace CustomizableControls.Attacks
             climbController = GetComponent<ClimbController>();
         }
 
+        [ContextMenu(nameof(Smash))]
         public void Smash()
         {
             if (!climbController.IsClimbing || !climbController.WallHitInfo.Value.collider.TryGetComponent(out IDamageable damageable)) return;

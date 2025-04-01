@@ -9,6 +9,7 @@ namespace Rampage.Player
     [RequireComponent(typeof(JumpController))]
     [RequireComponent(typeof(ClimbController))]
     [RequireComponent(typeof(WallSmashController))]
+    [SelectionBase]
     public class PlayerController : MonoBehaviour
     {
         private MoveController moveController;
