@@ -42,8 +42,8 @@ namespace CustomizableControls.Movement
 
         [Header("Attributes")]
         [SerializeField][Min(0f)] private float moveSpeedThreshold = 1e-3f;
-        [SerializeField][Min(0f)] private float climbSpeedDamping = 1f;
-        [SerializeField][Min(1e-5f)] private float climbForce = 500, strafeForce = 750f, jumpOffForce = 500f;
+        [SerializeField][Min(0f)] private float climbSpeedDamping = 2f;
+        [SerializeField][Min(1e-5f)] private float climbForce = 500, strafeForce = 750f, jumpOffForce = 250f;
         [Header("Events")]
         [field: SerializeField] public UnityEvent ClimbStarted { get; private set; }
         [field: SerializeField] public UnityEvent ClimbStopped { get; private set; }

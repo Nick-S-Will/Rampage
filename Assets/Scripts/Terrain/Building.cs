@@ -52,12 +52,20 @@ namespace Rampage.Terrain
             }
         }
 
-        public bool TakeDamage(Vector3 position)
+        public bool CanTakeDamage(IDamageDealer damageDealer, Vector3 position)
         {
-            DamageablePoint point = intactPoints.FirstOrDefault(p => p.collider.bounds.Contains(position));
-            if (point == null || !intactPoints.Remove(point)) return false;
+            if (damageDealer.DamageSource.transform.IsChildOf(transform)) return false;
 
+            return intactPoints.Any(point => point.collider.bounds.Contains(position));
+        }
+
+        public bool TakeDamage(IDamageDealer damageDealer, Vector3 position)
+        {
+            if (!CanTakeDamage(damageDealer, position)) return false;
+
+            DamageablePoint point = intactPoints.First(point => point.collider.bounds.Contains(position));
             point.renderer.material = damagedMaterial;
+            _ = !intactPoints.Remove(point);
 
             Damaged.Invoke();
 

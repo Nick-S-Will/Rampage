@@ -1462,10 +1462,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeedThreshold: 0.001
-  climbSpeedDamping: 1
+  climbSpeedDamping: 2
   climbForce: 500
   strafeForce: 750
-  jumpOffForce: 500
+  jumpOffForce: 250
   <ClimbStarted>k__BackingField:
     m_PersistentCalls:
       m_Calls: []
