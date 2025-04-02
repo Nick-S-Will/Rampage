@@ -27,6 +27,7 @@ namespace Rampage.Terrain
 
         public UnityEvent Damaged => damaged;
         public UnityEvent Collapsed => collapsed;
+        public EnemySpawner EnemySpawner => enemySpawner;
 
         [SerializeField] private Material damagedMaterial;
         [Header("Events")]

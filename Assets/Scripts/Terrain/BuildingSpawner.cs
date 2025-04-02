@@ -1,18 +1,21 @@
-using Rampage.Enemies;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
-
+using UnityEngine.Events;
 namespace Rampage.Terrain
 {
     public class BuildingSpawner : MonoBehaviour
     {
+        public UnityEvent<Building> Spawned => spawned;
+
+        [SerializeField] private Transform target;
         [SerializeField] private Building buildingPrefab;
         [SerializeField] private Transform[] spawnPoints;
-        [SerializeField] private Transform target;
         [Header("Attributes")]
         [SerializeField][Min(1f)] private int maxSpawnCount = 1;
+        [Header("Events")]
+        [SerializeField] private UnityEvent<Building> spawned;
 
         private readonly List<Building> buildings = new();
 
@@ -37,7 +40,7 @@ namespace Rampage.Terrain
             }
         }
 
-        protected virtual void SpawnBuildings()
+        protected void SpawnBuildings()
         {
             if (buildings.Count(building => building) > 1) return;
 
@@ -47,13 +50,20 @@ namespace Rampage.Terrain
             int spawnCount = Random.Range(1, maxSpawnCount + 1);
             for (int i = 0; i < spawnCount; i++)
             {
-                Transform spawnPoint = shuffledSpawnPoints[i];
-                Building building = Instantiate(buildingPrefab, spawnPoint.position, spawnPoint.rotation, transform);
-                building.Collapsed.AddListener(SpawnBuildings);
-                if (building.TryGetComponent(out EnemySpawner enemySpawner)) enemySpawner.Target = target;
-
+                Building building = SpawnBuilding(shuffledSpawnPoints[i]);
                 buildings.Add(building);
+
+                spawned.Invoke(building);
             }
+        }
+
+        protected virtual Building SpawnBuilding(Transform spawnPoint)
+        {
+            Building building = Instantiate(buildingPrefab, spawnPoint.position, spawnPoint.rotation, transform);
+            building.Collapsed.AddListener(SpawnBuildings);
+            building.EnemySpawner.Target = target;
+
+            return building;
         }
     }
 }
