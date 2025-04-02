@@ -286,7 +286,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cce44153cf64854587320717920e445, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <Target>k__BackingField: {fileID: 0}
+  target: {fileID: 0}
   gunEnemyPrefab: {fileID: 2931516079486567566, guid: a3b7bf242654a6d49b9119d2beadd372, type: 3}
   spawnPoints:
   - {fileID: 219279990482112178}
@@ -298,7 +298,7 @@ MonoBehaviour:
   - {fileID: 1710583458995489769}
   - {fileID: 3161495650885119898}
   maxEnemySpawnCount: 2
-  minSpawnDelay: 1
+  minSpawnDelay: 5
   maxSpawnDelay: 5
 --- !u!54 &1446712527487396031
 Rigidbody:

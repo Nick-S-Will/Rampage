@@ -8,11 +8,13 @@ namespace Rampage.Enemies
 {
     public class EnemySpawner : MonoBehaviour
     {
-        [field: SerializeField] public Transform Target { get; set; }
+        public Transform Target { get => target; set => target = value; }
+        public GunEnemy[] Enemies => enemies.ToArray();
 
+        [SerializeField] private Transform target;
         [SerializeField] private GunEnemy gunEnemyPrefab;
         [SerializeField] private Transform[] spawnPoints;
-        [Header("Attributes")]
+        [field: Header("Attributes")]
         [SerializeField][Min(1f)] private int maxEnemySpawnCount = 1;
         [SerializeField][Min(0f)] private float minSpawnDelay = 1f, maxSpawnDelay = 5f;
 
@@ -62,15 +64,20 @@ namespace Rampage.Enemies
             GunEnemy gunEnemy = Instantiate(gunEnemyPrefab, spawnPoint.position, spawnPoint.rotation, transform);
             gunEnemy.enabled = false;
             gunEnemy.Target = Target;
+            gunEnemy.Died.AddListener(() => enemies.Remove(gunEnemy));
             enemies.Add(gunEnemy);
 
             Quaternion startRotation = Quaternion.AngleAxis(-120f, spawnPoint.right) * spawnPoint.rotation;
+            gunEnemy.transform.rotation = startRotation;
+
             float delay = Random.Range(minSpawnDelay, maxSpawnDelay), progress = 0f;
+            yield return new WaitForSeconds(delay);
+
             while (progress <= 1f)
             {
                 gunEnemy.transform.rotation = Quaternion.Lerp(startRotation, spawnPoint.rotation, progress);
 
-                progress = delay > 0f ? progress + Time.deltaTime / delay : 1f;
+                progress = delay > 0f ? progress + Time.deltaTime : 1f;
 
                 yield return null;
             }

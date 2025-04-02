@@ -36,11 +36,9 @@ namespace CustomizableControls.Attacks.Shooting
 
         protected virtual void OnCollisionEnter(Collision collision)
         {
+            _ = ((IDamageDealer)this).DealDamage(collision.collider, collision.GetContact(0).point);
+
             Destroy(gameObject);
-
-            if (!collision.collider.TryGetComponent(out IDamageable damageable)) return;
-
-            damageable.TakeDamage(this, collision.GetContact(0).point);
         }
     }
 }

@@ -21,9 +21,9 @@ namespace CustomizableControls.Attacks
         [ContextMenu(nameof(Smash))]
         public void Smash()
         {
-            if (!climbController.IsClimbing || !climbController.WallHitInfo.Value.collider.TryGetComponent(out IDamageable damageable)) return;
+            if (!climbController.IsClimbing) return;
 
-            damageable.TakeDamage(this, climbController.WallHitInfo.Value.point);
+            _ = ((IDamageDealer)this).DealDamage(climbController.WallHitInfo.Value.collider, climbController.WallHitInfo.Value.point);
         }
     }
 }

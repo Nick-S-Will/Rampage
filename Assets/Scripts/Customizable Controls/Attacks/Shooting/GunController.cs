@@ -7,6 +7,7 @@ namespace CustomizableControls.Attacks.Shooting
 {
     public class GunController : MonoBehaviour
     {
+        public Component User { get; set; }
         public Projectile BulletPrefab => bulletPrefab;
         public Transform BulletSpawnPoint => bulletSpawnPoint;
         public float RoundsPerSecond => roundsPerSecond;
@@ -33,13 +34,13 @@ namespace CustomizableControls.Attacks.Shooting
         [SerializeField][Min(1f)] private int clipSize = 32;
         [SerializeField][Min(0f)] private int startingAmmo = 64;
         [SerializeField] private bool isFullyAutomatic = true, hasInfiniteAmmo;
+        [Header("Events")]
+        [SerializeField] private UnityEvent reloadStarted;
+        [SerializeField] private UnityEvent reloadEnded, bulletShot;
 #if DEBUG
         [Header("Debug")]
         [SerializeField][Range(0f, 1f)] private float sizePercentageBuffer = .1f;
 #endif
-        [Header("Events")]
-        [SerializeField] private UnityEvent reloadStarted;
-        [SerializeField] private UnityEvent reloadEnded, bulletShot;
 
         private Coroutine reloading, shooting;
         private float lastShootTime;
@@ -143,7 +144,7 @@ namespace CustomizableControls.Attacks.Shooting
         protected virtual IEnumerator ShootRoutine()
         {
             Projectile bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
-            bullet.Initialize(this, bulletSpeed);
+            bullet.Initialize(User != null ? User : this, bulletSpeed);
 
             ammoInClip--;
 

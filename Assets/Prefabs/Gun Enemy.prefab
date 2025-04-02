@@ -163,8 +163,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b65a4fffeff82ad4594e0ae29cecbd4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  target: {fileID: 0}
   gunController: {fileID: 7273091334897547672}
-  maxPointAngle: 60
+  renderer: {fileID: 3285736774586115873}
+  viewConeHalfAngle: 60
+  damaged:
+    m_PersistentCalls:
+      m_Calls: []
   coneResolution: 24
 --- !u!1 &4535627838467960153
 GameObject:
@@ -392,7 +397,6 @@ MonoBehaviour:
   startingAmmo: 0
   isFullyAutomatic: 1
   hasInfiniteAmmo: 1
-  sizePercentageBuffer: 0.1
   reloadStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -402,6 +406,7 @@ MonoBehaviour:
   bulletShot:
     m_PersistentCalls:
       m_Calls: []
+  sizePercentageBuffer: 0.1
 --- !u!1 &8886946071568815517
 GameObject:
   m_ObjectHideFlags: 0
