@@ -53,3 +53,6 @@ namespace Rampage.Player
         }
     }
 }
+// TODO: Give player health and make UI for it
+// TODO: Add scoring system
+// TODO: Add game over screen
