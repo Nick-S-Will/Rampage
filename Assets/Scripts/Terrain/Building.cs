@@ -84,12 +84,11 @@ namespace Rampage.Terrain
             if (!CanTakeDamage(damageDealer, position)) return false;
 
             GunEnemy enemy = enemySpawner.Enemies.FirstOrDefault(enemy => enemy.Renderer.bounds.Contains(position));
-            if (enemy == null || !enemy.TakeDamage(damageDealer, position))
-            {
-                DamageablePoint point = intactPoints.First(point => point.collider.bounds.Contains(position));
-                point.renderer.material = damagedMaterial;
-                _ = !intactPoints.Remove(point);
-            }
+            if (enemy && enemy.TakeDamage(damageDealer, position)) return true;
+
+            DamageablePoint point = intactPoints.First(point => point.collider.bounds.Contains(position));
+            point.renderer.material = damagedMaterial;
+            _ = !intactPoints.Remove(point);
 
             damaged.Invoke();
 
