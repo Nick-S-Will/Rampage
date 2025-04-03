@@ -27,12 +27,15 @@ namespace Rampage.Terrain
 
         public UnityEvent Damaged => damaged;
         public UnityEvent Collapsed => collapsed;
+        public UnityEvent Destroyed => destroyed;
         public EnemySpawner EnemySpawner => enemySpawner;
 
         [SerializeField] private Material damagedMaterial;
+        [Header("Attributes")]
+        [SerializeField][Min(0f)] private float collapseTime = 2f;
         [Header("Events")]
         [SerializeField] private UnityEvent damaged;
-        [SerializeField] private UnityEvent collapsed;
+        [SerializeField] private UnityEvent collapsed, destroyed;
 
         private EnemySpawner enemySpawner;
         private new Rigidbody rigidbody;
@@ -49,6 +52,11 @@ namespace Rampage.Terrain
             rigidbody = GetComponent<Rigidbody>();
             colliders = GetComponents<Collider>();
             CollectDamageablePoints();
+        }
+
+        protected virtual void OnDestroy()
+        {
+            destroyed.Invoke();
         }
 
         private void CollectDamageablePoints()
@@ -96,7 +104,7 @@ namespace Rampage.Terrain
             rigidbody.isKinematic = false;
             foreach (Collider collider in colliders) collider.enabled = false;
 
-            Destroy(gameObject, 5f);
+            Destroy(gameObject, collapseTime);
 
             collapsed.Invoke();
         }

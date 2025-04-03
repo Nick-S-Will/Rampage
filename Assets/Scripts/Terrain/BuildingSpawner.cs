@@ -45,10 +45,6 @@ namespace Rampage.Terrain
 
         protected void SpawnBuildings()
         {
-            if (buildings.Count(building => building) > 1) return;
-
-            buildings.Clear();
-
             Transform[] shuffledSpawnPoints = spawnPoints.Where(spawnPoint => spawnPoint.gameObject.activeInHierarchy).Shuffle().ToArray();
             int spawnCount = Random.Range(1, maxSpawnCount + 1);
             for (int i = 0; i < spawnCount; i++)
@@ -63,10 +59,18 @@ namespace Rampage.Terrain
         protected virtual Building SpawnBuilding(Transform spawnPoint)
         {
             Building building = Instantiate(buildingPrefab, spawnPoint.position, spawnPoint.rotation, transform);
-            building.Collapsed.AddListener(SpawnBuildings);
+            building.Destroyed.AddListener(OnBuildingDestroyed);
             building.EnemySpawner.Target = target;
 
             return building;
+        }
+
+        private void OnBuildingDestroyed()
+        {
+            if (buildings.Count(building => building) > 1) return;
+
+            buildings.Clear();
+            SpawnBuildings();
         }
     }
 }
