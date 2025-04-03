@@ -166,8 +166,8 @@ MonoBehaviour:
   target: {fileID: 0}
   gunController: {fileID: 7273091334897547672}
   renderer: {fileID: 3285736774586115873}
-  viewConeHalfAngle: 60
-  damaged:
+  viewConeHalfAngle: 45
+  died:
     m_PersistentCalls:
       m_Calls: []
   coneResolution: 24

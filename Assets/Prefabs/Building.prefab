@@ -298,8 +298,8 @@ MonoBehaviour:
   - {fileID: 1710583458995489769}
   - {fileID: 3161495650885119898}
   maxEnemySpawnCount: 2
-  minSpawnDelay: 5
-  maxSpawnDelay: 5
+  minSpawnDelay: 2.5
+  maxSpawnDelay: 7.5
   spawned:
     m_PersistentCalls:
       m_Calls: []

@@ -24,7 +24,10 @@ namespace Rampage.Terrain
             Assert.IsNotNull(buildingPrefab);
             Assert.IsTrue(spawnPoints.Length > 0 && spawnPoints.All(spawnPoint => spawnPoint));
             Assert.IsNotNull(target);
+        }
 
+        protected virtual void Start()
+        {
             SpawnBuildings();
         }
 
