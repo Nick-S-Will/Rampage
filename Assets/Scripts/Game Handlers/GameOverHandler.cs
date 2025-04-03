@@ -2,9 +2,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
-namespace Rampage.GameManagers
+namespace Rampage.GameHandlers
 {
-    public class GameOverManager : MonoBehaviour
+    public class GameOverHandler : MonoBehaviour
     {
         public UnityEvent GameEnded => gameEnded;
 
