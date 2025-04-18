@@ -70,7 +70,7 @@ namespace Rampage.Terrain
 
         private void OnBuildingDestroyed()
         {
-            if (buildings.Count(building => building) > 1) return;
+            if (buildings.Count(building => building && !building.IsCollapsing) > 0) return;
 
             buildings.Clear();
             SpawnBuildings();

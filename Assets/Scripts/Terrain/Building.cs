@@ -9,7 +9,6 @@ using UnityEngine.Events;
 namespace Rampage.Terrain
 {
     [RequireComponent(typeof(EnemySpawner))]
-    [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(Collider))]
     public class Building : MonoBehaviour, IDamageable
     {
@@ -29,6 +28,7 @@ namespace Rampage.Terrain
         public UnityEvent Collapsed => collapsed;
         public UnityEvent Destroyed => destroyed;
         public EnemySpawner EnemySpawner => enemySpawner;
+        public bool IsCollapsing { get; private set; }
 
         [SerializeField] private Material damagedMaterial;
         [Header("Attributes")]
@@ -38,18 +38,17 @@ namespace Rampage.Terrain
         [SerializeField] private UnityEvent collapsed, destroyed;
 
         private EnemySpawner enemySpawner;
-        private new Rigidbody rigidbody;
         private Collider[] colliders;
         private readonly HashSet<DamageablePoint> intactPoints = new();
 
         protected virtual void Awake()
         {
             Assert.IsNotNull(damagedMaterial);
+            Assert.IsTrue(GetComponentsInChildren<MeshRenderer>().Length > 0);
 
             damaged.AddListener(Collapse);
 
             enemySpawner = GetComponent<EnemySpawner>();
-            rigidbody = GetComponent<Rigidbody>();
             colliders = GetComponents<Collider>();
             CollectDamageablePoints();
         }
@@ -99,10 +98,10 @@ namespace Rampage.Terrain
         {
             if (intactPoints.Count > 0) return;
 
-            rigidbody.useGravity = true;
-            rigidbody.isKinematic = false;
             foreach (Collider collider in colliders) collider.enabled = false;
+            foreach (MeshRenderer meshRenderer in GetComponentsInChildren<MeshRenderer>()) meshRenderer.enabled = false;
 
+            IsCollapsing = true;
             Destroy(gameObject, collapseTime);
 
             collapsed.Invoke();
