@@ -21,9 +21,10 @@ namespace Rampage.Terrain
 
         protected virtual void Awake()
         {
+            Assert.IsNotNull(target);
             Assert.IsNotNull(buildingPrefab);
             Assert.IsTrue(spawnPoints.Length > 0 && spawnPoints.All(spawnPoint => spawnPoint));
-            Assert.IsNotNull(target);
+            Assert.IsTrue(maxSpawnCount <= spawnPoints.Length);
         }
 
         protected virtual void Start()
@@ -46,7 +47,9 @@ namespace Rampage.Terrain
         protected void SpawnBuildings()
         {
             Transform[] shuffledSpawnPoints = spawnPoints.Where(spawnPoint => spawnPoint.gameObject.activeInHierarchy).Shuffle().ToArray();
-            int spawnCount = Random.Range(1, maxSpawnCount + 1);
+            if (shuffledSpawnPoints.Length == 0) return;
+
+            int spawnCount = Random.Range(1, Mathf.Min(maxSpawnCount, shuffledSpawnPoints.Length) + 1);
             for (int i = 0; i < spawnCount; i++)
             {
                 Building building = SpawnBuilding(shuffledSpawnPoints[i]);
