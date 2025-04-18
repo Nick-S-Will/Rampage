@@ -35,10 +35,11 @@ namespace CustomizableControls.Movement
             {
                 if (IsClimbing) return -WallHitInfo.Value.normal;
 
-                bool isMoving = rigidbody.linearVelocity.magnitude > moveSpeedThreshold;
-                return isMoving ? Vector3.ProjectOnPlane(rigidbody.linearVelocity, transform.up).normalized : transform.forward;
+                return IsMoving ? Vector3.ProjectOnPlane(rigidbody.linearVelocity, transform.up).normalized : transform.forward;
             }
         }
+        public bool IsMoving => Vector3.ProjectOnPlane(rigidbody.linearVelocity, transform.up).magnitude > moveSpeedThreshold;
+        public bool IsGrounded => groundChecker.IsGrounded;
         public bool CanClimb => !groundChecker.IsGrounded;
         public bool IsClimbing => WallHitInfo.HasValue;
 

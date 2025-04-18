@@ -11,6 +11,7 @@ namespace CustomizableControls.Movement
     {
         public UnityEvent Jumped => jumped;
         public float JumpHeightMultiplier => jumpHeightMultiplier;
+        public bool IsGrounded => groundChecker.IsGrounded;
 
         [Header("Attributes")]
         [SerializeField][Min(1e-5f)] private float jumpHeight = 2f;

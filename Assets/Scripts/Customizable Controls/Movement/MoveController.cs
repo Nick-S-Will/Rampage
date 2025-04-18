@@ -23,7 +23,8 @@ namespace CustomizableControls.Movement
         }
         public Vector3 MoveVelocity => Vector3.ProjectOnPlane(rigidbody.linearVelocity, transform.up);
         public float MoveSpeed => MoveVelocity.magnitude;
-        public bool CanMove => canMoveOffGround || groundChecker.IsGrounded;
+        public bool CanMove => canMoveOffGround || IsGrounded;
+        public bool IsGrounded => groundChecker.IsGrounded;
         public bool IsMoving
         {
             get => isMoving;

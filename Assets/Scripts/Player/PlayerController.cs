@@ -1,6 +1,8 @@
 using CustomizableControls.Attacks;
 using CustomizableControls.Movement;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
 
 namespace Rampage.Player
@@ -12,6 +14,10 @@ namespace Rampage.Player
     [SelectionBase]
     public class PlayerController : MonoBehaviour
     {
+        private const string MoveSpeedFloatName = "Move Speed", OnGroundBoolName = "On Ground";
+
+        [SerializeField] private Animator animator;
+
         private MoveController moveController;
         private JumpController jumpController;
         private ClimbController climbController;
@@ -20,10 +26,19 @@ namespace Rampage.Player
 
         private void Awake()
         {
+            Assert.IsNotNull(animator);
+            Assert.IsTrue(animator.parameters.Any(parameter => parameter.name == MoveSpeedFloatName));
+            Assert.IsTrue(animator.parameters.Any(parameter => parameter.name == OnGroundBoolName));
+
             moveController = GetComponent<MoveController>();
             jumpController = GetComponent<JumpController>();
             climbController = GetComponent<ClimbController>();
             wallSmashController = GetComponent<WallSmashController>();
+        }
+
+        private void Update()
+        {
+            UpdateAnimator();
         }
 
         private void FixedUpdate()
@@ -50,6 +65,13 @@ namespace Rampage.Player
             if (!context.performed) return;
 
             wallSmashController.Smash();
+        }
+
+        private void UpdateAnimator()
+        {
+            if (climbController.IsMoving) animator.transform.forward = climbController.MoveForward;
+            animator.SetFloat(MoveSpeedFloatName, moveController.MoveSpeed);
+            animator.SetBool(OnGroundBoolName, moveController.IsGrounded);
         }
     }
 }
